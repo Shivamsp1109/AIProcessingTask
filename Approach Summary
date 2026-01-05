@@ -1,0 +1,25 @@
+So basically, this project asked me to predict the class of a sample image from the MNIST data.
+I prepared a CNN to perform digit classification using the MNIST dataset. This dataset contains greyscale images of 0-9. Hence, there are total of 10 classes. 
+The main objective is to train a deep learning model that can accurately recognize digits from image data.
+The MNIST dataset is then loaded using Tensorflow. 
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+
+The size for each image is 28 * 28 pixels. However, the images are reshaped to have only one channel as this is the necessary requirement for CNN model input parameters. 
+The pixel intensity is normalized to have a range of 0-1 which is done by dividing by 255. It was done because the basic algorithm of neural network is to learn by updating weights using gradients. 
+If it would have been 0-255, the gradient would be large and hence it can cause to slow or failed convergence(learning/training). 
+This was done through the following two lines mentioned in the code
+train_images = train_images.reshape(-1, 28, 28, 1).astype("float32") / 255.0
+test_images  = test_images.reshape(-1, 28, 28, 1).astype("float32") / 255.0
+
+Now there are many CNN architectures but I chose Sequential architecture as MNIST classification only needs a simple linear feature extraction. 
+This architecture consisted of two layers with ReLU(Rectified Linear Unit) activation. It will help in extracting features like edges and shapes. 
+I also used max pooling layers and flatten layer because max pooling layer will pick the highest activation from small regions of a feature map and since MNIST is a simple task so it will make the CNN faster. 
+Flatten layer was used to convert 2D feature maps to 1D feature vector. Finally dense layer with ReLU and softmax activation was used to get the output probability score.
+The model is compiled using Adam optimizer. It was so because the CNN here is for adaptive learning and is lightweight which makes Adam perfect choice. 
+This trains the model on batches of 64 samples over 5 epochs. Performance is evaluated after training by making predictions on the test dataset so generalization accuracy can be calculated.
+A random test image is chosen using numpy random and passed through the trained model, which generates a prediction of that image. 
+The predicted digit, along with the image itself, is displayed using OpenCV for simple visual confirmation of the model's output.
+Referred code:
+i = np.random.randint(0, len(test_images))
+sample = test_images[i]
+prediction = np.argmax(model.predict(sample.reshape(1,28,28,1)))
